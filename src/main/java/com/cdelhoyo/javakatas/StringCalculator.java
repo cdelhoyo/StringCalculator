@@ -10,20 +10,22 @@ public class StringCalculator {
     // "1,1,1" -> 3
 
     public int addNumbersFrom(String expression){
-        boolean hasDefineDelimiter = expression.startsWith("//");
-        String delimiter = ",";
-        if (hasDefineDelimiter){
-            delimiter = expression.split(";")[0].substring(2);
-            expression = expression.split(";")[1];
-        }
-        List<String> arrayList = Arrays.asList(expression.split(delimiter));
-        return arrayList.stream()
-                .filter(StringCalculator::isNumeric)
-                .mapToInt(Integer::valueOf)
-                .sum();
+        if(expression.isEmpty())
+            return 0;
+
+        String value = expression.indexOf(",") < 0 ? expression : expression.substring(0, expression.indexOf(","));
+        String nextString = expression.substring(value.length());
+
+        if(nextString.startsWith(","))
+            nextString = nextString.substring(1);
+
+        if(!isNumeric(value))
+            value = "0";
+
+        return Integer.valueOf(value) + addNumbersFrom(nextString);
     }
 
-    public static boolean isNumeric(String strNum) {
+    public boolean isNumeric(String strNum){
         return strNum.matches("-?\\d+(\\.\\d+)?");
     }
 }
